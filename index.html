@@ -196,8 +196,8 @@ function sendMail(){
     return;
   }
   let csv = "社員番号,名前,日時\n";
-  log.forEach(1=>{
-    csv += '${1.empNo},${1.name},${new Date(1.time).toLocaleString()}\n';
+  log.forEach(l=>{
+    csv += '${l.empNo},${l.name},${new Date(l.time).toLocaleString()}\n';
   });
   const subject = "コーヒー購入履歴";
   const body = "以下、購入履歴です。\n\n" + csv;
@@ -211,15 +211,10 @@ function sendMail(){
   //CSV作成
   let csv = "社員番号,名前,日時\n";
 
-  log.forEach(1=>{
-    csv += '${1.empNo},${1.name},${new Date(1.time).toLocaleString()}\n';
+  log.forEach(l=>{
+    csv += '${l.empNo},${l.name},${new Date(l.time).toLocaleString()}\n';
   });
 
-  //メール内容
-  location.href =
-    "mailto:yoshinoka@yoshiwa.co.jp" +
-    "?subject=" + encodeURIComponent(subject) +
-    "&body=" + encodeURIComponent(body);
 }
   
 </script>
