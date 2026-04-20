@@ -47,6 +47,7 @@ button {
   <h2>YOSHIWA COFFEE</h2>
   <button onclick="start('buy')">買う</button>
   <button onclick="start('history')">履歴</button>
+  <button onclick="sendMail()">月次送信</button>
 </div>
 
 <!-- スキャン -->
@@ -186,6 +187,25 @@ function getGreeting() {
   } else {
     return "おつかれさまです 🍵";
   }
+}
+
+function sendMail(){
+  if(log.length === 0){
+    alert("データがありません");
+    return;
+  }
+  //CSV作成
+  let csv = "社員番号,名前,日時\n";
+
+  log.forEach(1=>{
+    csv += '${1.empNo},${1.name},${new Date(1.time).toLocaleString()}\n';
+  });
+
+  //メール内容
+  location.href =
+    "mailto:yoshinoka@yoshiwa.co.jp" +
+    "?subject=" + encodeURIComponent(subject) +
+    "&body=" + encodeURIComponent(body);
 }
   
 </script>
