@@ -126,8 +126,7 @@ function handle(empNo){
     alert("社員データ読み込み中。少し待ってください");
     return;
   }
-  const emp = employees.find(e=>e.empNo===empNo);
-
+  const emp = employees.find(e => e.empNo == empNo.trim());
   if(!emp){
     alert("社員が見つかりません");
     return;
