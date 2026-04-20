@@ -189,7 +189,10 @@ function sendMail(){
     "?subject=" + encodeURIComponent(subject) +
     "&body=" + encodeURIComponent(body);
 }
-
+window.onload = function(){
+  loadEmployees();
+}
+  
 </script>
 
 </body>
