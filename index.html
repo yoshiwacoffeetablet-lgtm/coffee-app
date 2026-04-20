@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>YOSHIWA COFFEE</title>
 
-  
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
@@ -16,32 +15,25 @@ body {
   text-align:center;
   padding:20px;
 }
-#qr-reader {
-  border: 2px dashed #aaa;
-  border-radius: 10px;
-  padding: 10px;
-  width:280px;
-  margin:20px auto;
-}
-
 button {
   padding:12px 20px;
   margin:10px;
   font-size:16px;
+  border-radius:10px;
+  background:#3B2510;
+  color:white;
 }
-.screen {
-  display:none; 
+#qr-reader {
+  width:280px;
+  margin:20px auto;
 }
-.screen.active {
-  display:block; 
-}
+.screen { display:none; }
+.screen.active { display:block; }
 </style>
 
 </head>
 
 <body>
-
-<!-- メニュー -->
 
 <div id="menu" class="screen active">
   <h2>YOSHIWA COFFEE</h2>
@@ -51,24 +43,15 @@ button {
   <button onclick="sendMail()">月次送信</button>
 </div>
 
-<!-- スキャン -->
-
 <div id="scan" class="screen">
   <p>QRをかざすか、社員番号を入力</p>
-  <p style="font-size:14px; color:#666;">
-    カメラにQRをかざしてください
-  </p>
   <div id="qr-reader"></div>
-
   <input id="manual" placeholder="社員番号">
   <br>
   <button onclick="manual()">入力で進む</button>
-
-<br><br> <button onclick="goMenu()">戻る</button>
-
+  <br><br>
+  <button onclick="goMenu()">戻る</button>
 </div>
-
-<!-- 結果 -->
 
 <div id="result" class="screen">
   <h3 id="resultText"></h3>
@@ -77,7 +60,6 @@ button {
 
 <script>
 
-// ===== データ =====
 let mode = 'buy';
 
 let employees = [
@@ -89,7 +71,6 @@ let log = JSON.parse(localStorage.getItem('log') || '[]');
 
 let qr = null;
 
-// ===== 画面制御 =====
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -100,14 +81,12 @@ function goMenu(){
   show('menu');
 }
 
-// ===== 開始 =====
 function start(m){
   mode = m;
   show('scan');
   startQr();
 }
 
-// ===== QR =====
 function startQr(){
   qr = new Html5Qrcode("qr-reader");
 
@@ -128,15 +107,20 @@ function stopQr(){
   }
 }
 
-// ===== 手入力 =====
 function manual(){
   const val = document.getElementById('manual').value;
   handle(val);
 }
 
-// ===== 共通処理 =====
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour < 10) return "おはようございます ☀️";
+  if (hour < 18) return "今日も良い一日を♪";
+  return "おつかれさまです 🍵";
+}
+
 function handle(empNo){
-  empNo = empNo.trim();//
+
   const emp = employees.find(e=>e.empNo===empNo);
 
   if(!emp){
@@ -153,9 +137,11 @@ function handle(empNo){
     localStorage.setItem('log', JSON.stringify(log));
 
     showResult(
-      emp.name + " さん\n\n" +getGreeting()
+      emp.name + " さん\n\n" +
+      "☕ コーヒー購入ありがとうございました\n\n" +
+      getGreeting()
     );
-      }else{
+  }else{
     const history = log.filter(l=>l.empNo===emp.empNo);
 
     let text = emp.name + "\n\n";
@@ -172,23 +158,11 @@ function handle(empNo){
   }
 }
 
-// ===== 表示 =====
 function showResult(msg){
   document.getElementById('resultText').innerText = msg;
   show('result');
 }
 
-function getGreeting() {
-  const hour = new Date().getHours();
-
-  if (hour < 10) {
-    return "おはようございます ☀️";
-  } else if (hour < 18) {
-    return "今日も良い一日を♪";
-  } else {
-    return "おつかれさまです 🍵";
-  }
-}
 function sendMail(){
 
   if(log.length === 0){
@@ -196,33 +170,21 @@ function sendMail(){
     return;
   }
 
-  // CSV作成
   let csv = "社員番号,名前,日時\n";
 
   log.forEach(item => {
     csv += `${item.empNo},${item.name},${new Date(item.time).toLocaleString()}\n`;
   });
 
-  // 件名・本文
   const subject = "コーヒー購入履歴";
   const body = "以下、購入履歴です。\n\n" + csv;
 
-  // メール起動
   location.href =
     "mailto:yoshinoka@yoshiwa.co.jp" +
     "?subject=" + encodeURIComponent(subject) +
     "&body=" + encodeURIComponent(body);
 }
-  
-  //CSV作成
-  let csv = "社員番号,名前,日時\n";
 
-  log.forEach(l=>{
-    csv += '${l.empNo},${l.name},${new Date(l.time).toLocaleString()}\n';
-  });
-
-}
-  
 </script>
 
 </body>
