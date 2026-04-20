@@ -121,6 +121,11 @@ function getGreeting() {
 
 function handle(empNo){
 
+  // 読み込み待ち
+  if(employees.length === 0){
+    alert("社員データ読み込み中。少し待ってください");
+    return;
+  }
   const emp = employees.find(e=>e.empNo===empNo);
 
   if(!emp){
