@@ -22,6 +22,8 @@ body {
 }
 
 h2 {
+  color: white;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
   font-size: 24px;
   margin-bottom: 30px;
 }
@@ -31,18 +33,21 @@ button {
   width: 90%;
   max-width: 320px;
   padding: 18px;
-  margin: 20px auto;
+  margin: 24px auto;
   font-size: 20px;
   border-radius: 16px;
-  border: none;
-  background: #6F4E37;
+  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(60, 40, 20, 0.85);
+  
   color: white;
   display: block;
+
+  backdrop-filter:blur(4px);
 }
 
 /* 押したとき */
 button:active {
-  background: #5a3d2b;
+  background: rgba(60, 40, 20, 1);
 }
 
 /* QR枠 */
