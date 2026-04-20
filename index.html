@@ -150,8 +150,10 @@ function handle(empNo){
     });
     localStorage.setItem('log', JSON.stringify(log));
 
-    showResult(emp.name + " さん 購入完了");
-  }else{
+    showResult(
+      emp.name + " さん\n\n" +getGreeting()
+    );
+      }else{
     const history = log.filter(l=>l.empNo===emp.empNo);
 
     let text = emp.name + "\n\n";
@@ -174,6 +176,18 @@ function showResult(msg){
   show('result');
 }
 
+function getGreeting() {
+  const hour = new Date().getHours();
+
+  if (hour < 10) {
+    return "おはようございます ☀️";
+  } else if (hour < 18) {
+    return "今日も良い一日を♪";
+  } else {
+    return "おつかれさまです 🍵";
+  }
+}
+  
 </script>
 
 </body>
