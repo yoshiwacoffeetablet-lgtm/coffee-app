@@ -1,7 +1,435 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
+  <meta charset="UTF-8"><!DOCTYPE html>
+<html lang="ja">
+<head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#F5F0E8">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>YOSHIWA COFFEE</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: #F5F0E8;
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .screen {
+      width: 100%;
+      max-width: 420px;
+      min-height: 100vh;
+      background: #F5F0E8;
+      display: flex;
+      flex-direction: column;
+      padding: 48px 24px 32px;
+    }
+    .screen.hidden { display: none; }
+    .logo-wrap { display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+    .tagline { font-size: 10px; color: #8C7B65; letter-spacing: 0.12em; text-align: center; margin-bottom: 20px; }
+    .divider { border: none; border-top: 1px solid #D9D0BC; width: 100%; margin-bottom: 20px; }
+    .spacer { flex: 1; }
+    .cup-buttons { display: flex; justify-content: center; gap: 24px; margin-bottom: 16px; }
+    .cup-btn { display: flex; flex-direction: column; align-items: center; gap: 10px; background: none; border: none; cursor: pointer; padding: 16px; border-radius: 16px; transition: background 0.15s; -webkit-appearance: none; }
+    .cup-btn:active { background: #EDE8DE; }
+    .cup-btn-label { font-size: 15px; font-weight: 500; color: #3B2510; }
+    .btn { display: block; width: 100%; padding: 14px 0; border-radius: 12px; font-size: 15px; font-weight: 500; text-align: center; border: none; cursor: pointer; -webkit-appearance: none; transition: opacity 0.15s; }
+    .btn:active { opacity: 0.75; }
+    .btn-back { background: transparent; color: #8C7B65; border: 1px solid #D9D0BC; }
+    .btn-admin { background: transparent; color: #B0A090; border: 1px solid #D9D0BC; font-size: 12px; padding: 10px 0; border-radius: 10px; width: 100%; cursor: pointer; -webkit-appearance: none; }
+    .main-msg { font-size: 18px; font-weight: 500; color: #3B2510; text-align: center; line-height: 1.6; margin-bottom: 8px; }
+    .sub-msg { font-size: 13px; color: #8C7B65; text-align: center; line-height: 1.6; margin-bottom: 20px; }
+    .price-tag { font-size: 36px; font-weight: 500; color: #3B2510; text-align: center; margin-bottom: 20px; }
+    .nfc-area { border: 2px dashed #C4B49A; border-radius: 16px; padding: 28px 16px; text-align: center; margin-bottom: 20px; cursor: pointer; transition: background 0.2s; }
+    .nfc-area:active { background: #EDE8DE; }
+    .nfc-area.scanning { border-color: #4A6B2A; background: #f0f7ea; animation: pulse 1.2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.6} }
+    .nfc-text { font-size: 13px; color: #8C7B65; line-height: 1.6; margin-top: 8px; }
+    .nfc-text.scanning { color: #4A6B2A; }
+    .done-circle { width: 64px; height: 64px; border-radius: 50%; background: #3B2510; display: flex; align-items: center; justify-content: center; margin: 16px auto 20px; }
+    .history-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #D9D0BC; font-size: 13px; }
+    .history-date { color: #8C7B65; }
+    .history-price { font-weight: 500; color: #3B2510; }
+    .history-name { font-size: 13px; font-weight: 500; color: #3B2510; margin-bottom: 12px; }
+    .history-empty { font-size: 13px; color: #8C7B65; text-align: center; padding: 24px 0; }
+    .section-label { font-size: 11px; color: #8C7B65; letter-spacing: 0.08em; margin-bottom: 8px; width: 100%; }
+    .admin-card { width: 100%; background: #EDE8DE; border-radius: 10px; border: 1px solid #D9D0BC; padding: 12px 14px; margin-bottom: 10px; }
+    .admin-card-title { font-size: 13px; font-weight: 500; color: #3B2510; margin-bottom: 3px; }
+    .admin-card-status { font-size: 11px; color: #4A6B2A; margin-bottom: 8px; }
+    .btn-admin-action { display: block; width: 100%; padding: 8px 0; border-radius: 8px; background: #3B2510; color: #F5F0E8; font-size: 12px; text-align: center; border: none; cursor: pointer; }
+    .email-display { font-size: 11px; color: #3B2510; background: #F5F0E8; border: 1px solid #C4B49A; border-radius: 7px; padding: 7px 10px; margin-bottom: 6px; width: 100%; }
+    .btn-admin-sub { display: block; width: 100%; padding: 7px 0; border-radius: 8px; background: transparent; color: #3B2510; font-size: 12px; text-align: center; border: 1px solid #C4B49A; cursor: pointer; }
+    .pin-dots { display: flex; gap: 12px; justify-content: center; margin: 8px 0 20px; }
+    .pin-dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid #C4B49A; background: transparent; transition: background 0.1s; }
+    .pin-dot.filled { background: #3B2510; border-color: #3B2510; }
+    .pin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; margin-bottom: 12px; }
+    .pin-key { padding: 14px 0; border-radius: 10px; border: 1px solid #D9D0BC; background: #EDE8DE; color: #3B2510; font-size: 18px; font-weight: 500; text-align: center; cursor: pointer; -webkit-appearance: none; }
+    .pin-key:active { background: #D9D0BC; }
+    .pin-error { font-size: 12px; color: #A32D2D; text-align: center; margin-bottom: 8px; }
+    .idm-display { font-size: 11px; color: #8C7B65; text-align: center; margin-top: 8px; font-family: monospace; }
+    .toast { position: fixed; bottom: 40px; left: 50%; transform: translateX(-50%); background: #3B2510; color: #F5F0E8; padding: 10px 24px; border-radius: 24px; font-size: 13px; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100; white-space: nowrap; }
+    .toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<div class="toast" id="toast"></div>
+
+<!-- ロゴSVG定義（共通） -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <g id="logo-svg">
+      <text x="0" y="14" font-size="12" fill="#3B2510" font-family="Georgia, serif" letter-spacing="1">YOSHIWA</text>
+      <text x="0" y="28" font-size="12" fill="#3B2510" font-family="Georgia, serif" letter-spacing="1">COFFEE</text>
+      <path d="M82 30 Q88 21 90 8" stroke="#4A6B2A" stroke-width="1.3" stroke-linecap="round" fill="none"/>
+      <path d="M84 26 Q79 21 81 15 Q86 19 84 26Z" fill="#5E8A35"/>
+      <path d="M86 19 Q81 15 84 9 Q89 13 86 19Z" fill="#4A6B2A"/>
+      <path d="M88 14 Q84 8 87 4 Q92 8 88 14Z" fill="#6A9E3F"/>
+      <path d="M85 23 Q90 20 91 14 Q87 13 85 23Z" fill="#7AB84A"/>
+      <circle cx="83" cy="27" r="1.3" fill="#8B3A1A"/>
+      <circle cx="86" cy="21" r="1.3" fill="#8B3A1A"/>
+    </g>
+  </defs>
+</svg>
+
+<!-- ① メニュー画面 -->
+<div class="screen" id="screen-menu">
+  <div class="logo-wrap"><svg width="104" height="34" viewBox="0 0 104 34"><use href="#logo-svg"/></svg></div>
+  <div class="tagline">ENJOY YOUR BREAK</div>
+  <hr class="divider">
+  <div class="sub-msg">何をしますか？</div>
+  <div class="cup-buttons">
+    <button class="cup-btn" onclick="startNfc('buy')">
+      <svg width="130" height="158" viewBox="0 0 72 90" fill="none">
+        <path d="M26 12 Q24 6 26 2" stroke="#3B2510" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M36 12 Q34 6 36 2" stroke="#3B2510" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M46 12 Q44 6 46 2" stroke="#3B2510" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M14 18 L20 78 Q20 82 36 82 Q52 82 52 78 L58 18 Z" fill="#3B2510"/>
+        <rect x="11" y="15" width="50" height="6" rx="3" fill="#3B2510"/>
+        <path d="M52 38 Q66 38 66 52 Q66 66 52 66" stroke="#3B2510" stroke-width="4" stroke-linecap="round"/>
+        <path d="M17 44 L55 44 L53 58 L19 58 Z" fill="#F5F0E8" opacity="0.2"/>
+      </svg>
+      <span class="cup-btn-label">買う</span>
+    </button>
+    <button class="cup-btn" onclick="startNfc('history')">
+      <svg width="130" height="158" viewBox="0 0 72 90" fill="none">
+        <path d="M26 12 Q24 6 26 2" stroke="#8C7B65" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M36 12 Q34 6 36 2" stroke="#8C7B65" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M46 12 Q44 6 46 2" stroke="#8C7B65" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M14 18 L20 78 Q20 82 36 82 Q52 82 52 78 L58 18 Z" fill="none" stroke="#3B2510" stroke-width="2"/>
+        <rect x="11" y="15" width="50" height="6" rx="3" fill="none" stroke="#3B2510" stroke-width="2"/>
+        <path d="M52 38 Q66 38 66 52 Q66 66 52 66" stroke="#3B2510" stroke-width="3" stroke-linecap="round"/>
+        <circle cx="32" cy="52" r="8" stroke="#3B2510" stroke-width="2"/>
+        <line x1="38" y1="58" x2="44" y2="64" stroke="#3B2510" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="cup-btn-label">調べる</span>
+    </button>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn-admin" onclick="showScreen('screen-pin')">管理画面</button>
+</div>
+
+<!-- ② NFC読み取り画面（買う・調べる共用） -->
+<div class="screen hidden" id="screen-nfc">
+  <div class="logo-wrap"><svg width="104" height="34" viewBox="0 0 104 34"><use href="#logo-svg"/></svg></div>
+  <div class="tagline">ENJOY YOUR BREAK</div>
+  <hr class="divider">
+  <div class="main-msg" id="nfc-title">コーヒーを<br>購入しますか？</div>
+  <div class="price-tag" id="nfc-price">¥80</div>
+  <div class="nfc-area scanning" id="nfc-area">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" style="display:block;margin:0 auto;">
+      <path d="M5 12 Q5 5 12 5 Q19 5 19 12 Q19 19 12 19 Q5 19 5 12" stroke="#4A6B2A" stroke-width="1.5" fill="none" stroke-dasharray="3 2"/>
+      <circle cx="12" cy="12" r="3" fill="#3B2510"/>
+    </svg>
+    <div class="nfc-text scanning" id="nfc-text">社員証をここに<br>かざしてください</div>
+    <div class="idm-display" id="idm-display"></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn btn-back" onclick="stopNfc(); showScreen('screen-menu')">もどる</button>
+</div>
+
+<!-- ③ 購入完了画面 -->
+<div class="screen hidden" id="screen-buy-done">
+  <div class="logo-wrap"><svg width="104" height="34" viewBox="0 0 104 34"><use href="#logo-svg"/></svg></div>
+  <div class="tagline">ENJOY YOUR BREAK</div>
+  <hr class="divider">
+  <div class="done-circle">
+    <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
+      <path d="M5 12 L10 17 L19 7" stroke="#F5F0E8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="main-msg">購入完了！<br><span id="buyer-name">さん</span></div>
+  <div class="sub-msg">良い一日をお過ごしください</div>
+  <div class="spacer"></div>
+  <button class="btn btn-back" onclick="showScreen('screen-menu')">もどる</button>
+</div>
+
+<!-- ④ 履歴一覧画面 -->
+<div class="screen hidden" id="screen-history-list">
+  <div class="logo-wrap"><svg width="104" height="34" viewBox="0 0 104 34"><use href="#logo-svg"/></svg></div>
+  <div class="tagline">ENJOY YOUR BREAK</div>
+  <hr class="divider">
+  <div class="history-name" id="history-name"></div>
+  <div id="history-list"></div>
+  <div class="spacer"></div>
+  <button class="btn btn-back" onclick="showScreen('screen-menu')">もどる</button>
+</div>
+
+<!-- ⑤ 管理画面 暗証番号 -->
+<div class="screen hidden" id="screen-pin">
+  <div class="logo-wrap"><svg width="104" height="34" viewBox="0 0 104 34"><use href="#logo-svg"/></svg></div>
+  <div class="tagline">ADMIN</div>
+  <hr class="divider">
+  <div class="main-msg">暗証番号を<br>入力してください</div>
+  <div class="pin-dots">
+    <div class="pin-dot" id="dot0"></div>
+    <div class="pin-dot" id="dot1"></div>
+    <div class="pin-dot" id="dot2"></div>
+    <div class="pin-dot" id="dot3"></div>
+  </div>
+  <div class="pin-error hidden" id="pin-error">暗証番号が違います</div>
+  <div class="pin-grid">
+    <button class="pin-key" onclick="pinInput('1')">1</button>
+    <button class="pin-key" onclick="pinInput('2')">2</button>
+    <button class="pin-key" onclick="pinInput('3')">3</button>
+    <button class="pin-key" onclick="pinInput('4')">4</button>
+    <button class="pin-key" onclick="pinInput('5')">5</button>
+    <button class="pin-key" onclick="pinInput('6')">6</button>
+    <button class="pin-key" onclick="pinInput('7')">7</button>
+    <button class="pin-key" onclick="pinInput('8')">8</button>
+    <button class="pin-key" onclick="pinInput('9')">9</button>
+    <button class="pin-key" onclick="pinInput('0')" style="grid-column:2">0</button>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn btn-back" onclick="clearPin(); showScreen('screen-menu')">もどる</button>
+</div>
+
+<!-- ⑥ 管理画面メイン -->
+<div class="screen hidden" id="screen-admin">
+  <div class="logo-wrap"><svg width="104" height="34" viewBox="0 0 104 34"><use href="#logo-svg"/></svg></div>
+  <div class="tagline">ADMIN</div>
+  <hr class="divider">
+  <div class="section-label">月次データ送信</div>
+  <div class="admin-card">
+    <div class="admin-card-title">自動送信（毎月21日 8:00）</div>
+    <div class="admin-card-status" id="last-send-status">前回送信：なし</div>
+    <button class="btn-admin-action" onclick="manualSend()">今すぐ手動送信</button>
+  </div>
+  <div class="section-label">送信先メールアドレス</div>
+  <div class="admin-card">
+    <div class="email-display" id="send-email">yamamotok@yoshiwa.co.jp</div>
+    <button class="btn-admin-sub" onclick="changeEmail()">変更する</button>
+  </div>
+  <div class="section-label">社員マスタ</div>
+  <div class="admin-card">
+    <div class="admin-card-title">登録社員数</div>
+    <div class="admin-card-status" id="master-count">0名登録済み</div>
+    <button class="btn-admin-action" onclick="showScreen('screen-master')">社員マスタを確認</button>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn btn-back" onclick="showScreen('screen-menu')">もどる</button>
+</div>
+
+<!-- ⑦ 社員マスタ確認画面 -->
+<div class="screen hidden" id="screen-master">
+  <div class="logo-wrap"><svg width="104" height="34" viewBox="0 0 104 34"><use href="#logo-svg"/></svg></div>
+  <div class="tagline">ADMIN</div>
+  <hr class="divider">
+  <div class="history-name">社員マスタ</div>
+  <div id="master-list"></div>
+  <div class="spacer"></div>
+  <button class="btn btn-back" onclick="showScreen('screen-admin')">もどる</button>
+</div>
+
+<script>
+  // ===== データ =====
+  let nfcMode = 'buy';
+  let nfcReader = null;
+  const PIN = '1234';
+  let pinCurrent = '';
+
+  // 社員マスタ（テスト用ダミーデータ・後でCSV取り込みに変更）
+  let employeeMaster = [
+    { id: '0123456789ABCDEF', empNo: '001', name: '田中 太郎' },
+    { id: 'FEDCBA9876543210', empNo: '002', name: '山田 花子' },
+  ];
+
+  // 購入記録
+  let purchaseLog = JSON.parse(localStorage.getItem('purchaseLog') || '[]');
+
+  // ===== 画面切り替え =====
+  function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
+    window.scrollTo(0, 0);
+    if (id === 'screen-admin') updateAdminScreen();
+    if (id === 'screen-master') updateMasterScreen();
+  }
+
+  // ===== トースト =====
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ===== NFC =====
+  function startNfc(mode) {
+    nfcMode = mode;
+    if (mode === 'buy') {
+      document.getElementById('nfc-title').innerHTML = 'コーヒーを<br>購入しますか？';
+      document.getElementById('nfc-price').style.display = 'block';
+    } else {
+      document.getElementById('nfc-title').innerHTML = '購入履歴を<br>確認しますか？';
+      document.getElementById('nfc-price').style.display = 'none';
+    }
+    document.getElementById('idm-display').textContent = '';
+    showScreen('screen-nfc');
+    readNfc();
+  }
+
+  async function readNfc() {
+    if (!('NDEFReader' in window)) {
+      document.getElementById('nfc-text').textContent = 'このブラウザはNFC非対応です';
+      return;
+    }
+    try {
+      nfcReader = new NDEFReader();
+      await nfcReader.scan();
+      nfcReader.addEventListener('reading', ({ serialNumber }) => {
+        const idm = serialNumber.replace(/:/g, '').toUpperCase();
+        document.getElementById('idm-display').textContent = 'IDm: ' + idm;
+        handleNfcRead(idm);
+      });
+      nfcReader.addEventListener('readingerror', () => {
+        showToast('読み取りエラーが発生しました');
+      });
+    } catch(e) {
+      document.getElementById('nfc-text').textContent = 'NFCを有効にしてください';
+    }
+  }
+
+  function stopNfc() {
+    nfcReader = null;
+  }
+
+  function handleNfcRead(idm) {
+    stopNfc();
+    const emp = employeeMaster.find(e => e.id.toUpperCase() === idm.toUpperCase());
+    if (!emp) {
+      showToast('社員情報が見つかりません\nIDm: ' + idm);
+      setTimeout(() => showScreen('screen-menu'), 2000);
+      return;
+    }
+    if (nfcMode === 'buy') {
+      recordPurchase(emp);
+      document.getElementById('buyer-name').textContent = emp.name + 'さん';
+      showScreen('screen-buy-done');
+    } else {
+      showHistory(emp);
+    }
+  }
+
+  // ===== 購入記録 =====
+  function recordPurchase(emp) {
+    const now = new Date();
+    purchaseLog.push({
+      empNo: emp.empNo,
+      name: emp.name,
+      idm: emp.id,
+      datetime: now.toISOString(),
+      price: 80
+    });
+    localStorage.setItem('purchaseLog', JSON.stringify(purchaseLog));
+  }
+
+  // ===== 履歴表示 =====
+  function showHistory(emp) {
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+    const logs = purchaseLog
+      .filter(r => r.empNo === emp.empNo && new Date(r.datetime) >= threeMonthsAgo)
+      .sort((a, b) => new Date(b.datetime) - new Date(a.datetime));
+
+    document.getElementById('history-name').textContent = emp.name + 'さん';
+    const list = document.getElementById('history-list');
+    if (logs.length === 0) {
+      list.innerHTML = '<div class="history-empty">購入履歴がありません</div>';
+    } else {
+      list.innerHTML = logs.map(r => {
+        const d = new Date(r.datetime);
+        const dateStr = (d.getMonth()+1) + '/' + d.getDate() + '　' +
+          String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+        return `<div class="history-row"><span class="history-date">${dateStr}</span><span class="history-price">¥${r.price}</span></div>`;
+      }).join('');
+    }
+    showScreen('screen-history-list');
+  }
+
+  // ===== 管理画面 =====
+  function updateAdminScreen() {
+    const count = employeeMaster.length;
+    document.getElementById('master-count').textContent = count + '名登録済み';
+  }
+
+  function updateMasterScreen() {
+    const list = document.getElementById('master-list');
+    if (employeeMaster.length === 0) {
+      list.innerHTML = '<div class="history-empty">社員データがありません</div>';
+    } else {
+      list.innerHTML = employeeMaster.map(e =>
+        `<div class="history-row"><span class="history-date">${e.empNo}　${e.name}</span></div>`
+      ).join('');
+    }
+  }
+
+  function manualSend() {
+    showToast('送信機能は近日実装予定です');
+  }
+
+  function changeEmail() {
+    const current = document.getElementById('send-email').textContent;
+    const newEmail = prompt('新しいメールアドレスを入力してください', current);
+    if (newEmail && newEmail.includes('@')) {
+      document.getElementById('send-email').textContent = newEmail;
+      localStorage.setItem('sendEmail', newEmail);
+      showToast('メールアドレスを変更しました');
+    }
+  }
+
+  // ===== 暗証番号 =====
+  function pinInput(num) {
+    if (pinCurrent.length >= 4) return;
+    pinCurrent += num;
+    document.getElementById('dot' + (pinCurrent.length - 1)).classList.add('filled');
+    if (pinCurrent.length === 4) {
+      setTimeout(() => {
+        if (pinCurrent === PIN) {
+          clearPin();
+          showScreen('screen-admin');
+        } else {
+          document.getElementById('pin-error').classList.remove('hidden');
+          setTimeout(() => clearPin(), 1000);
+        }
+      }, 200);
+    }
+  }
+
+  function clearPin() {
+    pinCurrent = '';
+    for (let i = 0; i < 4; i++) document.getElementById('dot' + i).classList.remove('filled');
+    document.getElementById('pin-error').classList.add('hidden');
+  }
+</script>
+</body>
+</html>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#F5F0E8">
   <meta name="mobile-web-app-capable" content="yes">
