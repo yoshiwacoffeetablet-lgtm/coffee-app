@@ -1,4 +1,182 @@
 <!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOSHIWA COFFEE</title>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<style>
+body {
+  font-family: sans-serif;
+  background:#F5F0E8;
+  text-align:center;
+  padding:20px;
+}
+
+button {
+  padding:12px 20px;
+  margin:10px;
+  font-size:16px;
+}
+
+#qr-reader {
+  width:300px;
+  margin:20px auto;
+}
+
+input {
+  padding:10px;
+  font-size:16px;
+  width:200px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>YOSHIWA COFFEE</h2>
+
+<div id="menu">
+  <button onclick="startProcess('buy')">買う</button>
+  <button onclick="startProcess('history')">履歴</button>
+</div>
+
+<div id="scan" style="display:none;">
+  <p>QRをかざすか、社員番号を入力</p>
+
+  <div id="qr-reader"></div>
+
+  <input id="manual-input" placeholder="社員番号">
+  <br>
+  <button onclick="manualSubmit()">入力で進む</button>
+
+  <br>
+  <button onclick="goMenu()">戻る</button>
+</div>
+
+<div id="result" style="display:none;">
+  <h3 id="result-text"></h3>
+  <button onclick="goMenu()">戻る</button>
+</div>
+
+<script>
+
+// ===== データ =====
+let mode = 'buy';
+
+let employeeMaster = [
+  { empNo:'001', name:'田中太郎' },
+  { empNo:'002', name:'山田花子' }
+];
+
+let purchaseLog = JSON.parse(localStorage.getItem('log') || '[]');
+
+let qr = null;
+
+// ===== 画面 =====
+function goMenu(){
+  stopQr();
+  document.getElementById('menu').style.display='block';
+  document.getElementById('scan').style.display='none';
+  document.getElementById('result').style.display='none';
+}
+
+function startProcess(m){
+  mode = m;
+  document.getElementById('menu').style.display='none';
+  document.getElementById('scan').style.display='block';
+
+  startQr();
+}
+
+// ===== QR =====
+function startQr(){
+  qr = new Html5Qrcode("qr-reader");
+
+  qr.start(
+    { facingMode:"environment" },
+    { fps:10, qrbox:250 },
+    (text)=>{
+      handleUser(text);
+      stopQr();
+    }
+  );
+}
+
+function stopQr(){
+  if(qr){
+    qr.stop().catch(()=>{});
+    qr = null;
+  }
+}
+
+// ===== 手入力 =====
+function manualSubmit(){
+  const val = document.getElementById('manual-input').value;
+  handleUser(val);
+}
+
+// ===== 共通処理 =====
+function handleUser(empNo){
+
+  const emp = employeeMaster.find(e=>e.empNo===empNo);
+
+  if(!emp){
+    alert("社員が見つかりません");
+    return;
+  }
+
+  if(mode==='buy'){
+    recordPurchase(emp);
+    showResult(emp.name + " さん 購入完了");
+  }else{
+    showHistory(emp);
+  }
+}
+
+// ===== 購入 =====
+function recordPurchase(emp){
+  purchaseLog.push({
+    empNo:emp.empNo,
+    name:emp.name,
+    time:new Date().toISOString()
+  });
+  localStorage.setItem('log', JSON.stringify(purchaseLog));
+}
+
+// ===== 履歴 =====
+function showHistory(emp){
+  const logs = purchaseLog.filter(l=>l.empNo===emp.empNo);
+
+  let text = emp.name + "\n\n";
+
+  if(logs.length===0){
+    text += "履歴なし";
+  }else{
+    logs.forEach(l=>{
+      text += new Date(l.time).toLocaleString() + "\n";
+    });
+  }
+
+  showResult(text);
+}
+
+// ===== 結果表示 =====
+function showResult(msg){
+  document.getElementById('scan').style.display='none';
+  document.getElementById('result').style.display='block';
+  document.getElementById('result-text').innerText=msg;
+}
+
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
