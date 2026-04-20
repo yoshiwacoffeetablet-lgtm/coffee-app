@@ -14,7 +14,7 @@ body {
   
   background-image: url("https://raw.githubusercontent.com/yoshiwacoffeetablet-lgtm/coffee-app/main/%E9%9D%92%20%E3%83%99%E3%83%BC%E3%82%B8%E3%83%A5%20%E3%82%B7%E3%83%B3%E3%83%97%E3%83%AB%20%E3%82%B3%E3%83%BC%E3%83%92%E3%83%BC%20%E3%82%B9%E3%83%88%E3%83%BC%E3%83%AA%E3%83%BC.png");
   background-size: cover;
-  background-position: top;
+  background-position: bottom;
   background-repeat: no-repeat;
 
   text-align: center;
@@ -22,10 +22,10 @@ body {
 }
 
 h2 {
-  color: white;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.4);
-  font-size: 24px;
+  color: ;#6b4f3a;
+  margin-top: 40px;
   margin-bottom: 30px;
+  letter-spacing: 2px;
 }
 
 /* ボタンをデカく */
@@ -35,19 +35,20 @@ button {
   padding: 18px;
   margin: 24px auto;
   font-size: 20px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.3);
-  background: rgba(60, 40, 20, 0.85);
+  border-radius: 30px;
+  background: rgba(120, 180, 180, 0.85);
   
   color: white;
+  border: 2px solid rgba(255,255,255,0.7);
+  
   display: block;
 
-  backdrop-filter:blur(4px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
 /* 押したとき */
 button:active {
-  background: rgba(60, 40, 20, 1);
+  background: rgba(610, 160, 160, 1);
 }
 
 /* QR枠 */
@@ -59,9 +60,10 @@ button:active {
 
 /* 結果表示も大きく */
 #resultText {
-  font-size: 22px;
-  line-height: 1.6;
-  margin: 30px 10px;
+  font-size: 20px;
+  line-height: 1.8;
+  color: #6b4f3a;
+  margin-top: 40px;
 }
 
 .screen {
