@@ -189,6 +189,27 @@ function sendMail(){
     "?subject=" + encodeURIComponent(subject) +
     "&body=" + encodeURIComponent(body);
 }
+async function loadEmployees(){
+  const res = await fetch('./employees.csv?ver=' + new Date().getTime());
+  const text = await res.text();
+
+  const lines = text.split('\n');
+  employees = [];
+
+  lines.slice(1).forEach(line => {
+    const [empNo, name] = line.split(',');
+    if(empNo){
+      employees.push({
+        empNo: empNo.trim(),
+        name: name.trim()
+      });
+    }
+  });
+
+  console.log("読み込み完了:", employees);
+}
+
+  
 window.onload = function(){
   loadEmployees();
 }
