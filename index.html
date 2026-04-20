@@ -11,24 +11,57 @@
 <style>
 body {
   font-family: sans-serif;
-  background:#F5F0E8;
-  text-align:center;
-  padding:20px;
+  background: #F5F0E8;
+  text-align: center;
+  padding: 20px;
 }
+
+h2 {
+  font-size: 24px;
+  margin-bottom: 30px;
+}
+
+/* ボタンをデカく */
 button {
-  padding:12px 20px;
-  margin:10px;
-  font-size:16px;
-  border-radius:10px;
-  background:#3B2510;
-  color:white;
+  width: 90%;
+  max-width: 320px;
+  padding: 18px;
+  margin: 20px auto;
+  font-size: 20px;
+  border-radius: 16px;
+  border: none;
+  background: #6F4E37;
+  color: white;
+  display: block;
 }
+
+/* 押したとき */
+button:active {
+  background: #5a3d2b;
+}
+
+/* QR枠 */
 #qr-reader {
-  width:280px;
-  margin:20px auto;
+  width: 90%;
+  max-width: 300px;
+  margin: 20px auto;
 }
-.screen { display:none; }
-.screen.active { display:block; }
+
+/* 結果表示も大きく */
+#resultText {
+  font-size: 22px;
+  line-height: 1.6;
+  margin: 30px 10px;
+}
+
+.screen {
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
 </style>
 
 </head>
@@ -37,10 +70,9 @@ button {
 
 <div id="menu" class="screen active">
   <h2>YOSHIWA COFFEE</h2>
-  <button onclick="start('buy')">買う</button>
-  <button onclick="start('history')">履歴</button>
-  <br><br>
-  <button onclick="sendMail()">月次送信</button>
+  <button onclick="start('buy')">☕ コーヒーを買う</button>
+  <button onclick="start('history')">📋 利用履歴を見る</button>
+  <button onclick="sendMail()">📩 月次送信</button> 
 </div>
 
 <div id="scan" class="screen">
