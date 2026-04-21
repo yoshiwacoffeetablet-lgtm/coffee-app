@@ -205,25 +205,38 @@ function showHistory(){
 // メール送信（手動）
 function sendMail(){
 
+  // ★パスワード
+  const password = prompt("管理者パスワードを入力してください");
+
+  if(password !== "1234"){
+    alert("パスワードが違います");
+    return;
+  }
+
+  // データチェック
   if(log.length === 0){
     alert("データがありません");
     return;
   }
 
+  // CSV作成
   let csv = "社員番号,名前,日時\n";
 
   log.forEach(item => {
     csv += `${item.empNo},${item.name},${new Date(item.time).toLocaleString()}\n`;
   });
 
+  // 件名
   const now = new Date();
   const subject = `コーヒー利用履歴（${now.getFullYear()}年${now.getMonth()+1}月分）`;
 
+  // メール起動
   location.href =
     "mailto:yoshinoka@yoshiwa.co.jp" +
     "?subject=" + encodeURIComponent(subject) +
     "&body=" + encodeURIComponent(csv);
 }
+
 
 </script>
 
